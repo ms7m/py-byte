@@ -87,4 +87,19 @@ class BytePost(object):
         else:
             return []
 
+    def rebyte(self):
+        try:
+            req_send = self._session.post(
+                Endpoints.REBYTE, data=convert_dict({'postID': self._post_id})
+            )
+            if req_send.status_code == 200:
+                return True
+            else:
+                return False
+        except Exception as error:
+            logger.error(f'rebyte error: {error}')
+            return False
+
+
+
     
