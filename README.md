@@ -38,6 +38,9 @@ Byte **does not** have an official web API for developers, and most likely this 
 
 # Usage
 
+
+> View your account
+
 ```python
 >> import pybyte
 
@@ -56,7 +59,29 @@ Byte **does not** have an official web API for developers, and most likely this 
 datetime.datetime(2020, 1, 26, 4, 40, 57, tzinfo=tzutc())
 >>> 
 
+
 ```
+
+> View a post
+
+```python
+>>> import pybyte
+>>> 
+>>> byte = pybyte.Byte()
+2020-01-26 12:28:12.623 | INFO     | pybyte.byte:__init__:87 - loaded from cache.
+>>> post = byte.get_post("4ZPUKLE5OZB7JJGIBLVMIYQLBU")
+
+>>> post.caption
+'@peaks '
+
+>>> post.date
+datetime.datetime(2020, 1, 26, 15, 35, 32, tzinfo=tzutc())
+
+>>> post.mentions
+[<pybyte.user.ByteUser object at 0x104d03c90>]
+>>> 
+```
+
 
 **Attention**: You'll only need to supply a google OAuth (Soon to be done automatically) *once* and pybyte will cache the authorization token for you. After doing this one time, simply call ``pybyte.Byte`` without any arugments.
 

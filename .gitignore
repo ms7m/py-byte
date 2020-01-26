@@ -3,3 +3,6 @@ user.json
 .vscode/*
 __pycache__
 test.py
+build/*
+dist/*
+.DS_Store
