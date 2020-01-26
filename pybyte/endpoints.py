@@ -24,3 +24,5 @@ class Endpoints:
     COMMENT = return_comment
     LIKE = return_like
     FOLLOW = return_follow
+    UPLOAD = base + "/upload"
+    POST = base + "/post"
