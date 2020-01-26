@@ -95,11 +95,71 @@ class BytePost(object):
             if req_send.status_code == 200:
                 return True
             else:
+                logger.error(f"status code not 200: {req_send.status_code}")
+                logger.debug(req_send.texts)
+                return False
+        except Exception as error:
+            logger.error(f'rebyte error: {error}')
+            return False
+
+    def un_rebyte(self):
+        try:
+            req_send = self._session.delete(
+                Endpoints.UNREBYTE(self._post_id)
+            )
+            if req_send.status_code == 200:
+                return True
+            else:
+                logger.error(f"status code not 200: {req_send.status_code}")
+                logger.debug(req_send.texts)
+                return False
+        except Exception as error:
+            logger.error(f'rebyte error: {error}')
+            return False
+            
+    def unlike(self):
+        try:
+            req_send = self._session.delete(
+                Endpoints.LIKE(self._post_id), data=convert_dict({'postID': self._post_id})
+            )
+            if req_send.status_code == 200:
+                return True
+            else:
+                logger.error(f"status code not 200: {req_send.status_code}")
+                logger.debug(req_send.texts)
                 return False
         except Exception as error:
             logger.error(f'rebyte error: {error}')
             return False
 
 
+    def like(self):
+        try:
+            req_send = self._session.put(
+                Endpoints.LIKE(self._post_id), data=convert_dict({'postID': self._post_id})
+            )
+            if req_send.status_code == 200:
+                return True
+            else:
+                logger.error(f"status code not 200: {req_send.status_code}")
+                logger.debug(req_send.texts)
+                return False
+        except Exception as error:
+            logger.error(f'rebyte error: {error}')
+            return False
 
     
+    def comment(self, string):
+        try:
+            req_send = self._session.post(
+                Endpoints.COMMENT(self._post_id), data=convert_dict({'postID': self._post_id, 'body': string})
+            )
+            if req_send.status_code == 200:
+                return True
+            else:
+                logger.error(f"status code not 200: {req_send.status_code}")
+                logger.debug(req_send.texts)
+                return False
+        except Exception as error:
+            logger.error(f'rebyte error: {error}')
+            return False
