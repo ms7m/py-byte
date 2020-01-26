@@ -27,14 +27,18 @@ Byte **does not** have an official web API for developers, and most likely this 
 - View Byte Profile ``ByteUser, ByteAccount``
 - View Byte Posts: ``BytePost``
 - Send authenticated requests to Byte API ``ByteSession``
-- Check for usernames
+- Upload Bytes
+- Follow Users
+- Rebyte Posts
+- Comment on Posts
+- Like Posts
+
 
 # To Do
 - Update user information 
-- ~~Interact with posts~~
 - Change Username
-- ~~Follow users~~
-- ~~Rebyte Posts~~
+- Show feed
+~
 
 # Usage
 
