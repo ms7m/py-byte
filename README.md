@@ -31,10 +31,10 @@ Byte **does not** have an official web API for developers, and most likely this 
 
 # To Do
 - Update user information 
-- Interact with posts 
+- ~~Interact with posts~~
 - Change Username
-- Follow users
-- Rebyte Posts
+- ~~Follow users~~
+- ~~Rebyte Posts~~
 
 # Usage
 
