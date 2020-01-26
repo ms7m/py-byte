@@ -1,0 +1,5 @@
+venv
+user.json
+.vscode/*
+__pycache__
+test.py

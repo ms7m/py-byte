@@ -1,0 +1,90 @@
+
+
+import requests
+import json
+from loguru import logger
+from pybyte.endpoints import Endpoints
+import arrow
+import pathlib
+from pybyte.user import ByteUser
+
+def convert_dict(dict):
+    return json.dumps(dict)
+
+def check_for_success(response):
+    try:
+        get_success_code = response.get('success', False)
+
+        if get_success_code == False:
+            return False
+        
+        status_code = str(get_success_code)
+        if status_code == "0":
+            return False
+        elif status_code == "1":
+            return True
+        else:
+            logger.error(f'unknown status code: {status_code}')
+            return False
+    except Exception as error:
+        logger.error(f'exception on checking for success: {error}')
+        return False
+
+
+class BytePost(object):
+    def __init__(self, post_id, session):
+        self._post_id = post_id
+        self._session = session
+        self._load()
+
+    def _load(self):
+        try:
+            req = self._session.get(
+                Endpoints.POST_INFO + self._post_id
+            )
+
+            if req.status_code == 200:
+                req_parse = req.json()
+                if check_for_success(req_parse) == True:
+                    self._post_info = req_parse['data']
+                else:
+                    logger.debug(req.text)
+                    raise Exception('Unable to get byte post: couldnt parse json')
+            else:
+                raise Exception(f'Byte API Failed: status code not 200. It is {req.status_code}')
+        except Exception as error:
+            logger.error(f"outer block fail: {req.status_code}")
+
+
+    @property
+    def author(self):
+        return ByteUser(self._post_info['id'], self._session)
+
+    @property
+    def caption(self):
+        return self._post_info['caption']
+
+    @property
+    def date(self):
+        return arrow.get(self._post_info['date']).datetime
+
+    @property
+    def comment_count(self):
+        return self._post_info['commentCount']
+
+    @property
+    def like_count(self):
+        return self._post_info['likeCount']
+    
+    @property
+    def rebyte_by_me(self):
+        return self._post_info['rebytedByMe']
+
+    @property
+    def mentions(self):
+        if self._post_info.get('mentions', False) != False:
+            return [ByteUser(user['accountID'], self._session) for user in self._post_info['mentions']]
+        else:
+            return []
+
+    
