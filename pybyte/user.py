@@ -79,6 +79,44 @@ class ByteUser(object):
             self.info()
         return arrow.get(self._userAccount['registrationDate']).datetime
 
+    @property
+    def following(self):
+        return self._userAccount['isFollowing']
+
+    @property
+    def followed(self):
+        return self._userAccount['isFollowed']
+
+        
+    def follow(self):
+        try:
+            req_send = self._session.put(
+                Endpoints.FOLLOW(self._userAccount['id'])
+            )
+            if req_send.status_code == 200:
+                return True
+            else:
+                logger.error(f"status code not 200: {req_send.status_code}")
+                logger.debug(req_send.texts)
+                return False
+        except Exception as error:
+            logger.error(f'rebyte error: {error}')
+            return False
+            
+    def unfollow(self):
+        try:
+            req_send = self._session.put(
+                Endpoints.FOLLOW(self._userAccount['id'])
+            )
+            if req_send.status_code == 200:
+                return True
+            else:
+                logger.error(f"status code not 200: {req_send.status_code}")
+                logger.debug(req_send.texts)
+                return False
+        except Exception as error:
+            logger.error(f'rebyte error: {error}')
+            return False
         
 
 class ByteAccount(object):

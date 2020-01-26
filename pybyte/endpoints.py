@@ -10,6 +10,9 @@ def return_unrebyte(string):
 def return_comment(string):
     return base + f"/post/id/{string}/feedback/comment"
 
+def return_follow(string):
+    return base +  f"/account/id/{string}/follow"
+
 class Endpoints:
     GOOGLE_LOGIN = base + "/authenticate/google"
     ACCOUNT = base + "/account/me"
@@ -20,3 +23,4 @@ class Endpoints:
     UNREBYTE = return_unrebyte
     COMMENT = return_comment
     LIKE = return_like
+    FOLLOW = return_follow
