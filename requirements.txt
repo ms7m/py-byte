@@ -15,7 +15,6 @@ lazy-object-proxy==1.4.3
 loguru==0.4.1
 mccabe==0.6.1
 pkginfo==1.5.0.1
-pybyte==0.0.1
 Pygments==2.5.2
 pylint==2.4.4
 python-dateutil==2.8.1
