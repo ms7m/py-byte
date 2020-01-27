@@ -79,28 +79,27 @@ class Byte(object):
             logger.error(f"unable to log in beacuse of: {error}")
             raise Exception("byte failure")
 
-
-    def __init__(self, google_token=True):
-        self._internalSession = requests.session()
-        self.__loginInformation = False
-        self._providedToken = False
-
-
-        if google_token == True:
-            if pathlib.Path("user.json").exists() == True:
-                __loadCache = self.__initalize_cached_json()
-                if __loadCache == True:
-                    logger.info('loaded from cache.')
-                    self._session = ByteSession(self.__loginInformation['token']['token'], providedSession=self._internalSession).session()
-                else:
-                    self.__loginInformation = False
+    def __createByteSession(self, token):
+        try:
+            self._session = ByteSession(token, providedSession=self.__internalSession)
+            attempt_get_user_info = self._session.session().get(
+                Endpoints.ACCOUNT
+            )
+            if attempt_get_user_info.status_code == 200:
+                self.__loginInformation = attempt_get_user_info.json()
             else:
-                raise Exception('unable to load cache, please reload with google ouath token')
-                    
-        else:
-            self._providedToken = google_token
-            self.__login()
-            self._session = ByteSession(self.__loginInformation['data']['token']['token'], providedSession=self._internalSession).session()
+                raise Exception(f"Unable to get user data: {attempt_get_user_info.status_code}")
+        except Exception as error:
+            logger.error(f"Error on creating a byteSession: {error}")
+            raise Exception(error)
+
+    def __init__(self, api_token):
+        self.__internalSession = requests.Session()
+        self.__loginInformation = False
+        self.__providedToken = False
+        self.__createByteSession(api_token)
+
+
 
     def me(self):
         return ByteAccount(self.__loginInformation, self._session)
