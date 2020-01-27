@@ -5,6 +5,8 @@ import sys
 from shutil import rmtree
 
 from setuptools import Command, find_packages, setup
+from setuptools.command.install import install
+
 
 NAME = "pybyte"
 DESCRIPTION = "Byte API Wrapper for Python"
@@ -12,7 +14,7 @@ AUTHOR = "Mustafa Mohamed"
 EMAIL = "mustafa@ms7m.me"
 REQUIRES_PYTHON = '>=3.6.0'
 URL = 'https://github.com/ms7m/py-byte'
-VERSION = '0.0.4'
+
 
 
 
@@ -20,7 +22,9 @@ VERSION = '0.0.4'
 REQUIRED = [
     'requests',
     'arrow',
-    'loguru'
+    'loguru',
+    'ffprobe'
+    'ffmpy'
 ]
 
 here = os.path.abspath(os.path.dirname(__file__))
@@ -37,7 +41,7 @@ except FileNotFoundError:
 # Where the magic happens:
 setup(
     name=NAME,
-    version="0.0.1",
+    version="0.1.1",
     description=DESCRIPTION,
     long_description=long_description,
     long_description_content_type='text/markdown',
