@@ -6,3 +6,4 @@ test.py
 build/*
 dist/*
 .DS_Store
+pybyte.egg-info/
