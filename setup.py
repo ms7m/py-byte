@@ -23,7 +23,7 @@ REQUIRED = [
     'requests',
     'arrow',
     'loguru',
-    'ffprobe'
+    'ffprobe',
     'ffmpy'
 ]
 
