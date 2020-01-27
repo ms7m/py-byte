@@ -86,6 +86,17 @@ datetime.datetime(2020, 1, 26, 15, 35, 32, tzinfo=tzutc())
 >>> 
 ```
 
+> Upload a video
+
+```python
+>>> import pybyte
+>>>
+>>> byte = pybyte.Byte()
+2020-01-26 12:28:12.623 | INFO     | pybyte.byte:__init__:87 - loaded from cache.
+
+>> byte.upload("sample.mp4", caption="Hello from pybyte!")
+True
+```
 
 **Attention**: You'll only need to supply a google OAuth (Soon to be done automatically) *once* and pybyte will cache the authorization token for you. After doing this one time, simply call ``pybyte.Byte`` without any arugments.
 
