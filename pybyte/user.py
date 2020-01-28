@@ -151,6 +151,55 @@ class ByteAccount(object):
         json.dump(self.__prelimData, open('user.json', 'w+'))
         self._userAccount = None
 
+
+    @property
+    def display_name(self):
+        return self.__prelimData['displayName']
+    
+    @display_name.setter
+    def display_name(self, value):
+        try:
+            copiedData = copy.deepcopy(self.__prelimData)
+            copiedData['displayName'] = value
+            attempt_request = self._internalSession.put(
+                Endpoints.ACCOUNT, convert_dict(copiedData)
+            )
+            if attempt_request.status_code == 200:
+                if check_for_success(attempt_request.json()) == True:
+                    # refresh the prelim changes
+                    self.__reload()
+                else:
+                    raise Exception("Unable to set bio: Byte returned a failed attempt.")
+            else:
+                raise Exception(f"Unable to set bio: Byte returned a non 200. {attempt_request.status_code}")
+
+        except Exception as error:
+            logger.error(f"error on setting bio: {error}")
+
+    @property
+    def bio(self):
+        return self.__prelimData['bio']
+    
+    @bio.setter
+    def bio(self, value):
+        try:
+            copiedData = copy.deepcopy(self.__prelimData)
+            copiedData['bio'] = value
+            attempt_request = self._internalSession.put(
+                Endpoints.ACCOUNT, convert_dict(copiedData)
+            )
+            if attempt_request.status_code == 200:
+                if check_for_success(attempt_request.json()) == True:
+                    # refresh the prelim changes
+                    self.__reload()
+                else:
+                    raise Exception("Unable to set bio: Byte returned a failed attempt.")
+            else:
+                raise Exception(f"Unable to set bio: Byte returned a non 200. {attempt_request.status_code}")
+
+        except Exception as error:
+            logger.error(f"error on setting bio: {error}")
+
     @property
     def username(self):
         return self.__prelimData['username']
@@ -176,7 +225,8 @@ class ByteAccount(object):
             logger.error(f"error on setting username: {error}")
             
     def user(self):
-        return ByteUser(self.__prelimData['account']['id'], self._internalSession)
+        return ByteUser(self.__prelimData['id'], self._internalSession)
+
 
 """
     def info(self):
