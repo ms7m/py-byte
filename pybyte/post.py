@@ -7,6 +7,7 @@ from pybyte.endpoints import Endpoints
 import arrow
 import pathlib
 from pybyte.user import ByteUser
+from pybyte.session import ByteSession
 
 def convert_dict(dict):
     return json.dumps(dict)
@@ -32,9 +33,20 @@ def check_for_success(response):
 
 
 class BytePost(object):
-    def __init__(self, post_id, session):
+    def __init__(self, post_id, session=False):
         self._post_id = post_id
         self._session = session
+
+        if session == False:
+            raise Exception("no session provided.")
+        else:
+            if isinstance(session, ByteSession) == True:
+                self._session = session.session()
+            else:
+                if isinstance(session, requests.Session) == True:
+                    self._session = session
+                else:
+                    raise Exception("Unknown session provided.")
         self._load()
 
     def _load(self):
@@ -86,6 +98,23 @@ class BytePost(object):
             return [ByteUser(user['accountID'], self._session) for user in self._post_info['mentions']]
         else:
             return []
+
+    def likes(self):
+        try:
+            req_send = self._session.get(
+                Endpoints.LIKE(self._post_id), data=convert_dict({'postID': self._post_id})
+            )
+            if req_send.status_code == 200:
+                return [ByteUser(user['id'], self._session) for user in req_send.json()['data']['accounts']]
+            else:
+                logger.error(f"status code not 200: {req_send.status_code}")
+                logger.debug(req_send.texts)
+                return False
+        except Exception as error:
+            logger.error(f'rebyte error: {error}')
+            return False        
+
+
 
     def rebyte(self):
         try:
