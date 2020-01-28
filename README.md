@@ -22,83 +22,63 @@ Byte **does not** have an official web API for developers, and most likely this 
     cd py-byte
     python3 setup.py install
     ```
-
-# Features
-- View Byte Profile ``ByteUser, ByteAccount``
-- View Byte Posts: ``BytePost``
-- Send authenticated requests to Byte API ``ByteSession``
-- Upload Bytes
-- Follow Users
-- Rebyte Posts
-- Comment on Posts
-- Like Posts
-
-
-# To Do
-- Update user information 
-- Change Username
-- Show feed
-~
-
 # Usage
 
-
-> View your account
-
-```python
->> import pybyte
-
->> byte = pybyte.Byte(<google auth token>)
->>> me = byte.me()
->>> me
-<pybyte.user.ByteAccount object at 0x1069a2150>
-
-...
-
->>> me.user().user_id
-'MZBW6JBYUBDKBMQK62LCBS7I6Q'
->>> me.user().username
-'gjoder'
->>> me.user().registered
-datetime.datetime(2020, 1, 26, 4, 40, 57, tzinfo=tzutc())
->>> 
-
-
-```
-
-> View a post
-
 ```python
 >>> import pybyte
->>> 
->>> byte = pybyte.Byte()
-2020-01-26 12:28:12.623 | INFO     | pybyte.byte:__init__:87 - loaded from cache.
->>> post = byte.get_post("4ZPUKLE5OZB7JJGIBLVMIYQLBU")
-
->>> post.caption
-'@peaks '
-
->>> post.date
-datetime.datetime(2020, 1, 26, 15, 35, 32, tzinfo=tzutc())
-
->>> post.mentions
-[<pybyte.user.ByteUser object at 0x104d03c90>]
->>> 
-```
-
-> Upload a video
-
-```python
->>> import pybyte
+>>> byte = pybyte.Byte(TOKEN)
+>>> byte.me().username
+'cmmvo22123'
 >>>
->>> byte = pybyte.Byte()
-2020-01-26 12:28:12.623 | INFO     | pybyte.byte:__init__:87 - loaded from cache.
+>>> # Set your username/display name/biography
+...
+>>> byte.me().username = "BotBottyFace220"
+>>> byte.me().username
+'BotBottyFace220'
 
->> byte.upload("sample.mp4", caption="Hello from pybyte!")
-True
+>>> # Get Posts
+>>> post = byte.get_post("4ZPUKLE5OZB7JJGIBLVMIYQLBU")
+>>> post.caption
+'@peaks'
+>>> post.mentions
+[mention1]
+
+# Rebyte/Like posts
+>>> post.rebyte()
+>>> post.like()
+
+# Comment Posts
+>>> post.comment("That's really funny!")
+
+
+# Upload Posts
+>>> byte.upload("sample.mp4", caption="Megan is too funny!")
+
 ```
 
-**Attention**: You'll only need to supply a google OAuth (Soon to be done automatically) *once* and pybyte will cache the authorization token for you. After doing this one time, simply call ``pybyte.Byte`` without any arugments.
+
+
+### Example Script
+
+```python
+# Check a list of posts, comment and follow the author if they have < 10 followers
+
+posts = [
+  'ID1',
+  "ID2",
+  "ID3"
+]
+
+for post in posts:
+  	get_post = byte.get_post(post)
+    if get_post.author['followerCount'] > 10:
+      	get_post.comment("Hey man, thanks for making me laugh!")
+        get_post.like()
+    else:
+      	continue
+        
+ 
+```
 
 # Tests
 Coming soon
