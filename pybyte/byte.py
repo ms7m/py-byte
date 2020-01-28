@@ -50,35 +50,6 @@ class Byte(object):
             logger.error("unable to open cached login information.")
             return False
 
-    
-    def __login(self, sessionProvided=True):
-        if sessionProvided == True:
-            sessionProvided = self._internalSession
-        else:
-            sessionProvided = sessionProvided
-
-        try:
-            if self._providedToken == False:
-                raise Exception("No google OAUTH token provided.")
-            
-
-            attempt_login = self._internalSession.post(
-                Endpoints.GOOGLE_LOGIN, self.convert_dict({'token': self._providedToken})
-            )
-            if attempt_login.status_code == 200:
-                request_parsed = attempt_login.json()
-                if self.check_for_success(request_parsed) == True:
-                    self.__loginInformation = request_parsed
-                else:
-                    logger.debug(request_parsed)
-                    raise Exception("byte api failed.")
-            else:
-                logger.error(f"byte api failed: {attempt_login.status_code}")
-                raise Exception("byte api failed")
-        except Exception as error:
-            logger.error(f"unable to log in beacuse of: {error}")
-            raise Exception("byte failure")
-
     def __createByteSession(self, token):
         try:
             self._session = ByteSession(token, providedSession=self.__internalSession)
