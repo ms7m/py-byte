@@ -7,7 +7,8 @@ from loguru import logger
 from pybyte.endpoints import Endpoints
 import arrow
 import pathlib
-
+import copy
+from pybyte.session import ByteSession
 
 def convert_dict(dict):
     return json.dumps(dict)
@@ -120,6 +121,15 @@ class ByteUser(object):
         
 
 class ByteAccount(object):
+    def __reload(self):
+        try:
+            get_new = self._internalSession.get(
+                Endpoints.ACCOUNT
+            ).json()
+            self.__init__(get_new, self._internalSession)
+        except Exception as error:
+            raise Exception(f"Unable to reload byte account data: {error}")
+
     def __init__(self, user_information, session=False):
         if user_information.get('data', False) == False:
             self.__prelimData = user_information
@@ -129,11 +139,42 @@ class ByteAccount(object):
         if session == False:
             raise Exception("no session provided.")
         else:
-            self._internalSession = session
-
+            if isinstance(session, ByteSession) == True:
+                self._internalSession = session.session()
+            else:
+                if isinstance(session, requests.Session) == True:
+                    self._internalSession = session
+                else:
+                    raise Exception("Unknown session provided.")
+                #self._internalSession = session
+            
         json.dump(self.__prelimData, open('user.json', 'w+'))
         self._userAccount = None
 
+    @property
+    def username(self):
+        return self.__prelimData['username']
+
+    @username.setter
+    def username(self, value):
+        try:
+            copiedData = copy.deepcopy(self.__prelimData)
+            copiedData['username'] = value
+            attempt_request = self._internalSession.put(
+                Endpoints.ACCOUNT, convert_dict(copiedData)
+            )
+            if attempt_request.status_code == 200:
+                if check_for_success(attempt_request.json()) == True:
+                    # refresh the prelim changes
+                    self.__reload()
+                else:
+                    raise Exception("Unable to set username: Byte returned a failed attempt.")
+            else:
+                raise Exception(f"Unable to set username: Byte returned a non 200. {attempt_request.status_code}")
+
+        except Exception as error:
+            logger.error(f"error on setting username: {error}")
+            
     def user(self):
         return ByteUser(self.__prelimData['account']['id'], self._internalSession)
 
