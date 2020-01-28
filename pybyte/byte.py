@@ -50,57 +50,27 @@ class Byte(object):
             logger.error("unable to open cached login information.")
             return False
 
-    
-    def __login(self, sessionProvided=True):
-        if sessionProvided == True:
-            sessionProvided = self._internalSession
-        else:
-            sessionProvided = sessionProvided
-
+    def __createByteSession(self, token):
         try:
-            if self._providedToken == False:
-                raise Exception("No google OAUTH token provided.")
-            
-
-            attempt_login = self._internalSession.post(
-                Endpoints.GOOGLE_LOGIN, self.convert_dict({'token': self._providedToken})
+            self._session = ByteSession(token, providedSession=self.__internalSession)
+            attempt_get_user_info = self._session.session().get(
+                Endpoints.ACCOUNT
             )
-            if attempt_login.status_code == 200:
-                request_parsed = attempt_login.json()
-                if self.check_for_success(request_parsed) == True:
-                    self.__loginInformation = request_parsed
-                else:
-                    logger.debug(request_parsed)
-                    raise Exception("byte api failed.")
+            if attempt_get_user_info.status_code == 200:
+                self.__loginInformation = attempt_get_user_info.json()
             else:
-                logger.error(f"byte api failed: {attempt_login.status_code}")
-                raise Exception("byte api failed")
+                raise Exception(f"Unable to get user data: {attempt_get_user_info.status_code}")
         except Exception as error:
-            logger.error(f"unable to log in beacuse of: {error}")
-            raise Exception("byte failure")
+            logger.error(f"Error on creating a byteSession: {error}")
+            raise Exception(error)
 
-
-    def __init__(self, google_token=True):
-        self._internalSession = requests.session()
+    def __init__(self, api_token):
+        self.__internalSession = requests.Session()
         self.__loginInformation = False
-        self._providedToken = False
+        self.__providedToken = False
+        self.__createByteSession(api_token)
 
 
-        if google_token == True:
-            if pathlib.Path("user.json").exists() == True:
-                __loadCache = self.__initalize_cached_json()
-                if __loadCache == True:
-                    logger.info('loaded from cache.')
-                    self._session = ByteSession(self.__loginInformation['token']['token'], providedSession=self._internalSession).session()
-                else:
-                    self.__loginInformation = False
-            else:
-                raise Exception('unable to load cache, please reload with google ouath token')
-                    
-        else:
-            self._providedToken = google_token
-            self.__login()
-            self._session = ByteSession(self.__loginInformation['data']['token']['token'], providedSession=self._internalSession).session()
 
     def me(self):
         return ByteAccount(self.__loginInformation, self._session)
