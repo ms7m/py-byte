@@ -30,6 +30,17 @@ Byte **does not** have an official web API for developers, and most likely this 
 >>> byte.me().username
 'cmmvo22123'
 >>>
+
+>>> # View your timeline
+>>> byte.me().timeline_feed()
+>>> # iterate over your timeline feed
+>>> for post in byte.me().timeline_feed().feed:
+>>>     print(post.caption)
+>>>     print(post.author)
+>>>     post.comment("Hey!")
+
+
+
 >>> # Set your username/display name/biography
 ...
 >>> byte.me().username = "BotBottyFace220"
@@ -61,23 +72,26 @@ Byte **does not** have an official web API for developers, and most likely this 
 ### Example Script
 
 ```python
-# Check a list of posts, comment and follow the author if they have < 10 followers
+# Go through the global feed, comment and follow the author if they have < 10 followers
 
-posts = [
-  'ID1',
-  "ID2",
-  "ID3"
-]
+global_feed = byte.me().global_feed()
 
-for post in posts:
-  	get_post = byte.get_post(post)
-    if get_post.author['followerCount'] > 10:
-      	get_post.comment("Hey man, thanks for making me laugh!")
-        get_post.like()
+for post in global_feed.feed:
+    if post.author['followerCount'] > 10:
+      	post.comment("Hey man, thanks for making me laugh!")
+        post.like()
     else:
       	continue
         
  
+```
+
+### Example Scripts
+
+```python
+# Go through your posts and delete any post older than 3 days
+
+# coming soon.
 ```
 
 # Tests
