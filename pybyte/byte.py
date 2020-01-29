@@ -138,7 +138,7 @@ class Byte(object):
                 "contentType": "image/jpeg"
             }
             
-            req_url = self._session.post(Endpoints.UPLOAD, data=self.convert_dict(thumbnail_data))
+            req_url = self._session.session().post(Endpoints.UPLOAD, data=self.convert_dict(thumbnail_data))
             req_url_parsed = req_url.json()['data']
             try:
                 upload_urls['thumbnail'] = {
@@ -209,7 +209,7 @@ class Byte(object):
 
             data_condensed = self.convert_dict(data_to_push)
 
-            req_push = self._session.post(Endpoints.POST, data=data_condensed)
+            req_push = self._session.session().post(Endpoints.POST, data=data_condensed)
             if req_push.status_code == 200:
                 if self.check_for_success(req_push.json()) == True:
                     return BytePost(req_push.json()['data']['id'], self._session)
