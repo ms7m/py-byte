@@ -138,7 +138,7 @@ class Byte(object):
                 "contentType": "image/jpeg"
             }
             
-            req_url = self._session.post(Endpoints.UPLOAD, data=self.convert_dict(thumbnail_data))
+            req_url = self._session.session().post(Endpoints.UPLOAD, data=self.convert_dict(thumbnail_data))
             req_url_parsed = req_url.json()['data']
             try:
                 upload_urls['thumbnail'] = {
