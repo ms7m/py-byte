@@ -26,3 +26,6 @@ class Endpoints:
     FOLLOW = return_follow
     UPLOAD = base + "/upload"
     POST = base + "/post"
+    POPULAR = base + "/feed/popular/v2"
+    GLOBAL = base + '/feed/global'
+    TIMELINE = base + "/timeline"

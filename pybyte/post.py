@@ -6,8 +6,8 @@ from loguru import logger
 from pybyte.endpoints import Endpoints
 import arrow
 import pathlib
-from pybyte.user import ByteUser
 from pybyte.session import ByteSession
+from pybyte.feed import ByteFeed
 
 def convert_dict(dict):
     return json.dumps(dict)
@@ -70,7 +70,8 @@ class BytePost(object):
 
     @property
     def author(self):
-        return ByteUser(self._post_info['id'], self._session)
+        from pybyte.user import ByteUser
+        return ByteUser(self._post_info['authorID'], self._session)
 
     @property
     def caption(self):
@@ -94,12 +95,14 @@ class BytePost(object):
 
     @property
     def mentions(self):
+        from pybyte.user import ByteUser
         if self._post_info.get('mentions', False) != False:
             return [ByteUser(user['accountID'], self._session) for user in self._post_info['mentions']]
         else:
             return []
 
     def likes(self):
+        from pybyte.user import ByteUser
         try:
             req_send = self._session.get(
                 Endpoints.LIKE(self._post_id), data=convert_dict({'postID': self._post_id})
@@ -117,6 +120,7 @@ class BytePost(object):
 
 
     def rebyte(self):
+        
         try:
             req_send = self._session.post(
                 Endpoints.REBYTE, data=convert_dict({'postID': self._post_id})
@@ -192,3 +196,4 @@ class BytePost(object):
         except Exception as error:
             logger.error(f'rebyte error: {error}')
             return False
+

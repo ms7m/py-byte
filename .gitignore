@@ -7,3 +7,5 @@ build/*
 dist/*
 .DS_Store
 pybyte.egg-info/
+
+.idea/
