@@ -119,7 +119,7 @@ class Byte(object):
                 "contentType": "video/mp4"
             }
 
-            req_url = self._session.post(Endpoints.UPLOAD, data=self.convert_dict(video_data))
+            req_url = self._session.session().post(Endpoints.UPLOAD, data=self.convert_dict(video_data))
             req_url_parsed = req_url.json()['data']
             
             try:
