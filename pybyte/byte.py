@@ -8,7 +8,6 @@ from pybyte.session import ByteSession
 from pybyte.user import ByteAccount, ByteUser
 from pybyte.post import BytePost
 
-from ffprobe import FFProbe
 from ffmpy import FFmpeg
 
 
@@ -84,6 +83,8 @@ class Byte(object):
 
 
     def upload(self, file_path, caption=""):
+
+        """
         try:
             metadata = FFProbe(file_path)
             metadata_information = metadata.streams[0]
@@ -92,6 +93,7 @@ class Byte(object):
 
         except Exception as error:
             raise Exception(f"FFProbe failed: {error}")
+        """
 
         try:
             logger.info("generating a thumbnail")
