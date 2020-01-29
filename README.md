@@ -77,7 +77,7 @@ Byte **does not** have an official web API for developers, and most likely this 
 global_feed = byte.me().global_feed()
 
 for post in global_feed.feed:
-    if post.author['followerCount'] > 10:
+    if post.author.followers['followerCount'] > 10:
       	post.comment("Hey man, thanks for making me laugh!")
         post.like()
     else:
