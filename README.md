@@ -2,7 +2,7 @@
 
 *** 
 
-# Byte API Wrapper for Python
+# A Python wrapper for the byte.co app.
 Python 3.6+ Required.
 ***
 **Attention**: This project was built in a weekend (mostly in the weekend that it was launched) as such this is **not production level** software. 
