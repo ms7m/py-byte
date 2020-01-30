@@ -32,9 +32,9 @@ Byte **does not** have an official web API for developers, and most likely this 
 >>>
 
 >>> # View your timeline
->>> byte.me().timeline_feed()
+>>> my_timeline = byte.me().timeline()
 >>> # iterate over your timeline feed
->>> for post in byte.me().timeline_feed().feed:
+>>> for post in my_timeline.feed:
 >>>     print(post.caption)
 >>>     print(post.author)
 >>>     post.comment("Hey!")
