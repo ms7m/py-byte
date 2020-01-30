@@ -40,7 +40,7 @@ except FileNotFoundError:
 # Where the magic happens:
 setup(
     name=NAME,
-    version="0.1.5",
+    version="0.1.6",
     description=DESCRIPTION,
     long_description=long_description,
     long_description_content_type='text/markdown',

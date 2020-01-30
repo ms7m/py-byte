@@ -224,6 +224,84 @@ class ByteAccount(object):
         except Exception as error:
             logger.error(f"error on setting username: {error}")
             
+
+    def global_feed(self):
+        from pybyte.feed import ByteFeed
+        from pybyte.post import BytePost
+
+        try:
+            req_get = self._internalSession.get(
+                Endpoints.TIMELINE
+            )
+            if req_get.status_code == 200:
+                if check_for_success(req_get.json()) == True:
+                    return ByteFeed(Endpoints.GLOBAL, req_get.json(), self._internalSession, BytePost)
+                else:
+                    raise Exception(f"unable to get posts feed: {req_get.status_code}")
+            else:
+                raise Exception(f"unable to get posts feed: {req_get.status_code}")
+        except Exception as error:
+            logger.error(f'error on getting user posts: {error}')
+
+
+    def popular_feed(self):
+        from pybyte.feed import ByteFeed
+        from pybyte.post import BytePost
+
+        try:
+            req_get = self._internalSession.get(
+                Endpoints.POPULAR
+            )
+            if req_get.status_code == 200:
+                if check_for_success(req_get.json()) == True:
+                    return ByteFeed(Endpoints.POPULAR, req_get.json(), self._internalSession, BytePost)
+                else:
+                    raise Exception(f"unable to get posts feed: {req_get.status_code}")
+            else:
+                raise Exception(f"unable to get posts feed: {req_get.status_code}")
+        except Exception as error:
+            logger.error(f'error on getting user posts: {error}')
+
+
+
+    def timeline(self):
+        from pybyte.feed import ByteFeed
+        from pybyte.post import BytePost
+
+        try:
+            req_get = self._internalSession.get(
+                Endpoints.TIMELINE
+            )
+            if req_get.status_code == 200:
+                if check_for_success(req_get.json()) == True:
+                    return ByteFeed(Endpoints.TIMELINE, req_get.json(), self._internalSession, BytePost)
+                else:
+                    raise Exception(f"unable to get posts feed: {req_get.status_code}")
+            else:
+                raise Exception(f"unable to get posts feed: {req_get.status_code}")
+        except Exception as error:
+            logger.error(f'error on getting user posts: {error}')
+            
+                    
+    def posts(self):
+        from pybyte.feed import ByteFeed
+        from pybyte.post import BytePost
+
+        try:
+            req_get = self._internalSession.get(
+                Endpoints.POSTS(self.__prelimData['id'])
+            )
+            if req_get.status_code == 200:
+                if check_for_success(req_get.json()) == True:
+                    return ByteFeed(Endpoints.POSTS(self.__prelimData['id']), req_get.json(), self._internalSession, BytePost)
+                else:
+                    raise Exception(f"unable to get posts feed: {req_get.status_code}")
+            else:
+                raise Exception(f"unable to get posts feed: {req_get.status_code}")
+        except Exception as error:
+            logger.error(f'error on getting user posts: {error}')
+
+
     def user(self):
         return ByteUser(self.__prelimData['id'], self._internalSession)
 

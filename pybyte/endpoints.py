@@ -13,6 +13,9 @@ def return_comment(string):
 def return_follow(string):
     return base +  f"/account/id/{string}/follow"
 
+def return_posts(string):
+    return base + f"/account/id/{string}/posts"
+
 class Endpoints:
     GOOGLE_LOGIN = base + "/authenticate/google"
     ACCOUNT = base + "/account/me"
@@ -29,3 +32,5 @@ class Endpoints:
     POPULAR = base + "/feed/popular/v2"
     GLOBAL = base + '/feed/global'
     TIMELINE = base + "/timeline"
+    POSTS = return_posts
+    REBYTES_FEED = base + "/timeline/rebytes/"
