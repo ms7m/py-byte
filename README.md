@@ -89,9 +89,21 @@ for post in global_feed.feed:
 ### Example Scripts
 
 ```python
-# Go through your posts and delete any post older than 3 days
+# Go through your posts and comment any post older than 3 days and has less than 200 likes
 
-# coming soon.
+my_posts = byte.me().posts()
+time_now = datetime.datetime.now()
+
+for post in my_posts.feed:
+    if (time_now - post.date).days > 3:
+        if post.like_count < 200:
+            # i am not popular :(
+            post.comment("this post isn't making me popular")
+         else:
+            post.comment("Woohoo! I'm very popular!")
+    else:
+        # not old enough
+        continue
 ```
 
 # Tests
