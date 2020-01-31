@@ -22,48 +22,83 @@ Byte **does not** have an official web API for developers, and most likely this 
     cd py-byte
     python3 setup.py install
     ```
+    
 # Usage
 
 ```python
 >>> import pybyte
->>> byte = pybyte.Byte(TOKEN)
->>> byte.me().username
-'cmmvo22123'
->>>
-
->>> # View your timeline
->>> my_timeline = byte.me().timeline()
->>> # iterate over your timeline feed
->>> for post in my_timeline.feed:
->>>     print(post.caption)
->>>     print(post.author)
->>>     post.comment("Hey!")
-
-
-
->>> # Set your username/display name/biography
-...
->>> byte.me().username = "BotBottyFace220"
+>>> 
+>>> byte = pybyte.Byte("7WMRREHUQRH4DBK7DQCV7YWL44")
+>>> 
 >>> byte.me().username
 'BotBottyFace220'
+>>> 
+>>> my_timeline = byte.me().timeline()
+>>> 
+>>> # no rate limit protection yet. do it at your own risk!
+... 
+>>> import time
+>>> 
+>>> for post in my_timeline.feed:
+...     print(f"Caption: {post.caption}")
+...     time.sleep(1)
+...     print(f"Author: {post.author.username}")
+...     print('\n')
+... 
+Caption: 
+Author: BotMcBotFace2300
 
+
+Caption: Nice
+Author: BotMcBotFace2300
+
+
+Caption: 
+Author: BotMcBotFace2300
+
+
+Caption: 
+Author: BotMcBotFace2300
+
+
+Caption: @peaks 
+Author: BotMcBotFace2300
+# ...
+>>> 
+>>> 
+>>> # Set your own username
+... 
+>>> byte.me().username = "BotMcBotFace2300"
+>>> byte.me().username
+'BotMcBotFace2300'
+>>> 
 >>> # Get Posts
+... 
 >>> post = byte.get_post("4ZPUKLE5OZB7JJGIBLVMIYQLBU")
 >>> post.caption
-'@peaks'
+'@peaks '
 >>> post.mentions
-[mention1]
-
-# Rebyte/Like posts
+[<pybyte.user.ByteUser object at 0x10b33b550>]
+>>> 
+>>> # rebyte / like posts
+... 
 >>> post.rebyte()
+True
 >>> post.like()
-
-# Comment Posts
->>> post.comment("That's really funny!")
-
-
-# Upload Posts
->>> byte.upload("sample.mp4", caption="Megan is too funny!")
+True
+>>> 
+>>> # comment posts
+... 
+>>> post.comment("Haha!")
+True
+>>> 
+>>> # Upload Posts
+... 
+>> byte.upload('sample.mp4', caption="haha too funny!")
+>> # Automatically generate a thumbnail
+>> byte.upload('sample.mp4', caption="haha too funny!", generate_thumbnail=True)
+>> # Supply your own thumbnail!
+>> byte.upload('sample.mp4', caption="haha too funny", providedThumbnail="ultraCoolthumbnail.jpg")
 
 ```
 
