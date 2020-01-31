@@ -1,4 +1,3 @@
-
 import requests
 from pybyte.endpoints import Endpoints
 import json
@@ -7,17 +6,25 @@ from loguru import logger
 from pybyte.session import ByteSession
 from pybyte.user import ByteAccount, ByteUser
 from pybyte.post import BytePost
+import os
+
 
 from ffmpy import FFmpeg
 
 
-
+DEFAULT_THUMBNAIL = os.path.join(os.path.dirname(__file__), 'default_thumbnail.jpg')
 
 class Byte(object):
+    """
 
+    Byte API Client
+
+
+    """
     @staticmethod
     def convert_dict(dict):
         return json.dumps(dict)
+
     @staticmethod
     def check_for_success(response):
         try:
@@ -38,7 +45,6 @@ class Byte(object):
             logger.error(f'exception on checking for success: {error}')
             return False
 
-
     def __initalize_cached_json(self):
         try:
             attempted = open("user.json", 'r')
@@ -46,7 +52,7 @@ class Byte(object):
             self.__loginInformation = attempt_json
             return True
         except Exception as error:
-            logger.error("unable to open cached login information.")
+            logger.error(f"unable to open cached login information. -- {error}")
             return False
 
     def __createByteSession(self, token):
@@ -63,15 +69,21 @@ class Byte(object):
             logger.error(f"Error on creating a byteSession: {error}")
             raise Exception(error)
 
-    def __init__(self, api_token):
+    def __init__(self, api_token=None):
+
+        if api_token == None:
+            raise Exception("Token required.")
+
         self.__internalSession = requests.Session()
         self.__loginInformation = False
         self.__providedToken = False
         self.__createByteSession(api_token)
 
-
-
     def me(self):
+        """
+
+        :return:
+        """
         return ByteAccount(self.__loginInformation, self._session)
 
     def get_post(self, post_id):
@@ -80,37 +92,38 @@ class Byte(object):
     def get_user(self, user_id):
         return ByteUser(user_id, self._session)
 
+    def upload(self, file_path, caption="", generate_thumbnail=False, providedThumbnail="default_thumbnail.jpg"):
 
+        if generate_thumbnail == True:
+            from ffmpy import FFmpeg
+            try:
+                logger.info("generating a thumbnail")
 
-    def upload(self, file_path, caption=""):
+                if pathlib.Path("thumbnail.jpg").exists() == True:
+                    logger.info("overwriting existing thumbnail..")
+                    try:
+                        pathlib.Path("thumbnail.jpg").unlink()
+                    except Exception as error:
+                        logger.error(f"Unable to delete existing thumbnail.jpg. - {error}")
+                        raise Exception("Unable to delete existing thumbnail.jpg.")
 
-        """
-        try:
-            metadata = FFProbe(file_path)
-            metadata_information = metadata.streams[0]
-            if float(metadata_information.duration) > 6:
-                raise Exception(f"that video is too long. {metadata_information.duration}")
+                ff = FFmpeg(
+                    inputs={file_path: None},
+                    outputs={"thumbnail.jpg": ['-ss', '00:00:4', '-vframes', '1']}
+                )
+                ff.run()
+                providedThumbnail = "thumbnail.jpg"
+            except Exception as error:
+                raise Exception(f'could not generate a thumbnail: {error}. Do you have FFmpeg installed?')
+        else:
+            if providedThumbnail == "default_thumbnail.jpg":
+                providedThumbnail = DEFAULT_THUMBNAIL
+                logger.info("no thumbnail provided. Using default thumbnail..")
 
-        except Exception as error:
-            raise Exception(f"FFProbe failed: {error}")
-        """
-
-        try:
-            logger.info("generating a thumbnail")
-            ff = FFmpeg(
-                inputs={file_path: None}, 
-                outputs={"thumbnail.jpg": ['-ss', '00:00:4', '-vframes', '1']}
-            )
-            ff.run()
-        except Exception as error:
-            raise Exception(f'could not generate a thumbnail: {error}')
 
         # Get Upload Information
-        upload_urls = {
-            "video": None,
-            "thumbnail": None
-        }
-            
+        upload_urls = {}
+
         # Get thumbnail/video url
 
         try:
@@ -121,7 +134,7 @@ class Byte(object):
 
             req_url = self._session.session().post(Endpoints.UPLOAD, data=self.convert_dict(video_data))
             req_url_parsed = req_url.json()['data']
-            
+
             try:
                 upload_urls['video'] = {
                     'id': req_url_parsed['uploadID'],
@@ -133,11 +146,10 @@ class Byte(object):
                 logger.error('cant get upload urls.')
                 raise Exception(f"Unable to get upload urls: {error}")
 
-
             thumbnail_data = {
                 "contentType": "image/jpeg"
             }
-            
+
             req_url = self._session.session().post(Endpoints.UPLOAD, data=self.convert_dict(thumbnail_data))
             req_url_parsed = req_url.json()['data']
             try:
@@ -157,17 +169,17 @@ class Byte(object):
             logger.error(error)
             raise Exception('Upload failed.')
 
-
         # push thumbnail
 
         file_upload_thumbnail = {
-            "file": open("thumbnail.jpg", 'rb')
+            "file": open(providedThumbnail, 'rb')
         }
         try:
             headers = {
                 "Content-Type": upload_urls['thumbnail']['contentType']
             }
-            req_push = requests.put(upload_urls['thumbnail']['url'], headers=headers, data=file_upload_thumbnail['file'])
+            req_push = requests.put(upload_urls['thumbnail']['url'], headers=headers,
+                                    data=file_upload_thumbnail['file'])
             if req_push.status_code == 200:
                 logger.info("file seem to be uploaded.")
             else:
@@ -176,7 +188,6 @@ class Byte(object):
         except Exception as error:
             logger.error(f"Thumbnail block upload failed. {error}")
             raise Exception("Unable to upload.")
-
 
         # push video
         file_upload_video = {
@@ -197,7 +208,6 @@ class Byte(object):
         except Exception as error:
             logger.error(f"Thumbnail block upload failed. {error}")
             raise Exception("Unable to upload.")
-
 
         # final push
         try:
