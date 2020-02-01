@@ -262,7 +262,23 @@ class ByteAccount(object):
         except Exception as error:
             logger.error(f'error on getting user posts: {error}')
 
+    def latest_feed(self):
+        from pybyte.feed import ByteFeed
+        from pybyte.post import BytePost
 
+        try:
+            req_get = self._internalSession.get(
+                Endpoints.LATEST
+            )
+            if req_get.status_code == 200:
+                if check_for_success(req_get.json()) == True:
+                    return ByteFeed(Endpoints.LATEST, req_get.json(), self._internalSession, BytePost)
+                else:
+                    raise Exception(f"unable to get posts feed: {req_get.status_code}")
+            else:
+                raise Exception(f"unable to get posts feed: {req_get.status_code}")
+        except Exception as error:
+            logger.error(f'error on getting user posts: {error}')
 
     def timeline(self):
         from pybyte.feed import ByteFeed

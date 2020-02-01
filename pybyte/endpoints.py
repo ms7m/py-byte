@@ -34,3 +34,5 @@ class Endpoints:
     TIMELINE = base + "/timeline"
     POSTS = return_posts
     REBYTES_FEED = base + "/timeline/rebytes/"
+
+    LATEST = base + "/feed/mix"
