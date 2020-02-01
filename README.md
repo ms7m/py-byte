@@ -1,4 +1,11 @@
-![pybyte-logo](images/logo.svg)
+
+<p align="center">
+    <img
+      alt="Py-Byte"
+      src="images/logo.svg"
+      width="200"
+    />
+</p>
 
 *** 
 
