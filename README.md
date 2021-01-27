@@ -1,4 +1,12 @@
+# Attention
+***
 
+This library has not been updated since byte's launch-weekend.. Things might work but I honestly do not have the time nor the motiviation to continue this library. You should probably look for alternatives.
+
+
+
+
+***
 <p align="center">
     <img
       alt="Py-Byte"
